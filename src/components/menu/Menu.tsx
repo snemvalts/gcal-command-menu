@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Menu = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 500px;
+  height: 200px;
   background: red;
+  border-radius: 10px;
 `;
 
 
