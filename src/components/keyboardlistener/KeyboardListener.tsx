@@ -38,7 +38,11 @@ const KeyboardListener: FunctionComponent = (props) => {
   }, []);
 
 
-  return visible ? (<>{props.children}</>) : null;
+  if (visible) {
+    return <>{props.children}</>
+  }
+
+  return null;
 };
 
 
