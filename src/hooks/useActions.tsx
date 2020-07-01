@@ -24,14 +24,17 @@ const useActions = () => {
   }
 
 
+  // i could just return the function itself, but i want i to have a specific name
   return {
-    performAction: (shortcut: Shortcut) => {
-      if (shortcut === 'previous_period') {
+    performAction: (action: Action) => {
+      console.log('action submitted', action);
+      if (action === 'previous_period') {
         goToPreviousPeriod();
-      } else if (shortcut === 'next_period') {
+      } else if (action === 'next_period') {
         goToNextPeriod();
+      } else if (action === 'today') {
+        goToToday();
       }
-
     }
   }
 
@@ -39,4 +42,4 @@ const useActions = () => {
 
 export default useActions;
 
-export type Shortcut = 'previous_period' | 'next_period' | 'today';
+export type Action = 'previous_period' | 'next_period' | 'today';
