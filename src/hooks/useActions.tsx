@@ -1,3 +1,5 @@
+// @ts-ignore
+import * as chrono from 'chrono-node';
 
 
 
@@ -23,17 +25,27 @@ const useActions = () => {
     (document.querySelector('div[jsname="P6mm8"]') as HTMLElement | null)?.click();
   }
 
+  const goToDate = (date: {day: number, month: number}) => {
+    const splitURL = window.location.href.split('/');
+    // this detection isn't that good... checks if last two elements of / separated url are numeric...
+    if (!isNaN(parseInt(splitURL[splitURL.length - 1])) && !isNaN(parseInt(splitURL[splitURL.length - 2]))) {
+      window.location.href = [...splitURL.slice(0, -2), date.month.toString(), date.day.toString()].join('/');
+    }
+  }
 
-  // i could just return the function itself, but i want i to have a specific name
+
+  // i could just return the function itself, but i want it to have a specific name
   return {
-    performAction: (action: Action) => {
-      console.log('action submitted', action);
+    performAction: (action: Action, date?: {day: number, month: number}) => {
+      console.log(action, date);
       if (action === 'previous_period') {
         goToPreviousPeriod();
       } else if (action === 'next_period') {
         goToNextPeriod();
       } else if (action === 'today') {
         goToToday();
+      } else if (action === 'goto_date' && date) {
+        goToDate(date);
       }
     }
   }
@@ -42,4 +54,4 @@ const useActions = () => {
 
 export default useActions;
 
-export type Action = 'previous_period' | 'next_period' | 'today';
+export type Action = 'previous_period' | 'next_period' | 'today' | 'goto_date';

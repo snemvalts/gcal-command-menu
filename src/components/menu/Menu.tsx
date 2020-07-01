@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import Input from '../input/Input';
 import MenuElement, { MenuItem } from './MenuElement';
 import useActions from "../../hooks/useActions";
+// @ts-ignore
+import * as chrono from 'chrono-node';
 
 const MenuContainer = styled.div`
   width: 500px;
@@ -40,6 +42,10 @@ const initialMenuItems: MenuItem[] = [
     keyShortcut: '⭢',
     action: 'next_period',
   },
+  {
+    title: 'Go to date',
+    action: 'goto_date',
+  },
 ];
 
 const Menu: FunctionComponent<{
@@ -54,7 +60,7 @@ const Menu: FunctionComponent<{
     const searchTerm = searchText.toLowerCase().trim();
     // String.includes is fancy and new, but indexOf is still faster
     setMenuItems(initialMenuItems.filter(
-      menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1
+      menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1 || (menuItem.action === 'goto_date' && searchTerm.indexOf('go to date') === 0)
     ));
   }, [searchText]);
 
@@ -77,7 +83,22 @@ const Menu: FunctionComponent<{
   };
 
   const performActionForElement = (idx: number) => {
-    performAction(menuItems[idx].action);
+    const actionToPerform = menuItems[idx].action;
+
+    if (actionToPerform !== 'goto_date') {
+      performAction(menuItems[idx].action);
+    } else {
+      // ideally this logic should sit elsewhere...
+      const result = chrono.parse(searchText.toLowerCase().replace('go to date', ''));
+      if (result.length > 0) {
+        const values = result[0]?.start?.knownValues;
+        if (values?.day && values?.month) {
+          // could do a spread here but can't be sure if it finds any other values
+          // won't cause any errors in runtime but still nice to construct this manually
+          performAction(menuItems[idx].action,{ day: values.day, month: values.month });
+        }
+      }
+    }
     props.onHideMenu();
   };
 
