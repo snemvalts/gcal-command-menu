@@ -26,7 +26,7 @@ const KeyboardListener: FunctionComponent = (props) => {
     return () => {
       document.querySelector('body')?.removeEventListener('keydown', handler);
     }
-  }, []);
+  }, [performAction]);
 
 
   if (visible) {
