@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Input from '../input/Input';
 import MenuElement, { MenuItem } from './MenuElement';
 import useActions from "../../hooks/useActions";
+import useNLPParser from "../../hooks/useNLPParse";
 
 const MenuContainer = styled.div`
   width: 500px;
@@ -40,6 +41,10 @@ const initialMenuItems: MenuItem[] = [
     keyShortcut: '⭢',
     action: 'next_period',
   },
+  {
+    title: 'Go to date',
+    action: 'goto_date',
+  },
 ];
 
 const Menu: FunctionComponent<{
@@ -49,12 +54,13 @@ const Menu: FunctionComponent<{
   const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
   const [searchText, setSearchText] = useState<string>('');
   const { performAction } = useActions();
+  const { parseDate } = useNLPParser();
 
   useEffect(() => {
     const searchTerm = searchText.toLowerCase().trim();
     // String.includes is fancy and new, but indexOf is still faster
     setMenuItems(initialMenuItems.filter(
-      menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1
+      menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1 || (menuItem.action === 'goto_date' && searchTerm.indexOf('go to date') === 0)
     ));
   }, [searchText]);
 
@@ -77,7 +83,17 @@ const Menu: FunctionComponent<{
   };
 
   const performActionForElement = (idx: number) => {
-    performAction(menuItems[idx].action);
+    const actionToPerform = menuItems[idx].action;
+
+    if (actionToPerform !== 'goto_date') {
+      performAction(menuItems[idx].action);
+    } else {
+      const dateString = searchText.toLowerCase().replace('go to date', '');
+      const parsed = parseDate(dateString);
+      if (parsed) {
+        performAction(menuItems[idx].action, parsed);
+      }
+    }
     props.onHideMenu();
   };
 
@@ -100,6 +116,7 @@ const Menu: FunctionComponent<{
         {menuItems.map((item, idx) => (
           <MenuElement item={item}
                        key={item.title}
+                       searchText={searchText}
                        active={idx === activeMenuItem} onItemClicked={() => performActionForElement(idx)}/>
         ))}
       </MenuItemsContainer>
