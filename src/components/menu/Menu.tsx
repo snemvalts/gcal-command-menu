@@ -6,7 +6,8 @@ import useActions from "../../hooks/useActions";
 
 const MenuContainer = styled.div`
   width: 500px;
-  background: #f3f3f3;
+  border: 1px solid #e3e3e3;
+  background: #efefef;
   border-radius: 5px;
   padding: 25px;
 `;
@@ -34,7 +35,9 @@ const initialMenuItems: MenuItem[] = [
   },
 ];
 
-const Menu: FunctionComponent = () => {
+const Menu: FunctionComponent<{
+  onHideMenu: () => void
+}> = (props) => {
   const [activeMenuItem, setActiveMenuItem] = useState<number>(0);
   const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
   const [searchText, setSearchText] = useState<string>('');
@@ -53,7 +56,7 @@ const Menu: FunctionComponent = () => {
     e.stopPropagation();
     if (e.key === 'Enter') {
       // if enter is pressed and only one menuitem is available, trigger that action
-      performAction(menuItems[activeMenuItem].action);
+      performActionForElement(activeMenuItem);
     } else if (e.key === 'ArrowDown') {
       // math.min so the index stops moving at the end
       setActiveMenuItem(activeMenuItem => Math.min(activeMenuItem + 1, menuItems.length - 1));
@@ -61,8 +64,13 @@ const Menu: FunctionComponent = () => {
       // math.min so the index stops moving at the beginning
       setActiveMenuItem(activeMenuItem => Math.max(activeMenuItem - 1, 0));
     } else if (e.key === 'Escape') {
-
+      props.onHideMenu();
     }
+  };
+
+  const performActionForElement = (idx: number) => {
+    performAction(menuItems[idx].action);
+    props.onHideMenu();
   };
 
   const searchOnChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,10 +84,13 @@ const Menu: FunctionComponent = () => {
              value={searchText}
              onChange={(e) => searchOnChangeHandler(e)}
              onKeyDown={(e) => searchKeyDownHandler(e)}
+             onBlur={() => props.onHideMenu()}
              />
       <MenuItemsContainer>
         {menuItems.map((item, idx) => (
-          <MenuElement item={item} key={item.title} active={idx === activeMenuItem}/>
+          <MenuElement item={item}
+                       key={item.title}
+                       active={idx === activeMenuItem} onItemClicked={() => performActionForElement(idx)}/>
         ))}
       </MenuItemsContainer>
     </MenuContainer>

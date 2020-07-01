@@ -3,15 +3,17 @@ import useActions from '../../hooks/useActions';
 
 
 
-const KeyboardListener: FunctionComponent = (props) => {
-  const [visible, setVisible] = useState(false);
+const KeyboardListener: FunctionComponent<{
+  visible: boolean,
+  onMenuShortcutPressed: () => void
+}> = (props) => {
   const { performAction } = useActions();
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === 'k' && e.metaKey) {
         e.stopPropagation();
-        setVisible(currentVisible => !currentVisible);
+        props.onMenuShortcutPressed();
       } else if (e.key === 'ArrowLeft') {
         e.stopPropagation();
         performAction('previous_period');
@@ -29,7 +31,7 @@ const KeyboardListener: FunctionComponent = (props) => {
   }, [performAction]);
 
 
-  if (visible) {
+  if (props.visible) {
     return <>{props.children}</>
   }
 

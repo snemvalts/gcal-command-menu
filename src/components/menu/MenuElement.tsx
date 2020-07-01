@@ -3,16 +3,21 @@ import styled from 'styled-components';
 import { Action } from '../../hooks/useActions';
 
 const MenuItemContainer = styled.div`
-  padding: 10px 0;
-  
+  padding: 10px 0 10px 10px;
+  border-radius: 4px;
+  user-select: none;
+  cursor: pointer;
   &.active {
     background: white;
   }
 `;
 
-const MenuElement: FunctionComponent<{item: MenuItem, active: boolean}> = (props) => {
+const MenuElement: FunctionComponent<{item: MenuItem, active: boolean, onItemClicked: () => void}> = (props) => {
   return (
-    <MenuItemContainer className={`${props.active? 'active' : ''}`}>
+    <MenuItemContainer className={`${props.active? 'active' : ''}`} onClick={(e) => {
+      e.stopPropagation();
+      props.onItemClicked();
+    }}>
       {props.item.title}
     </MenuItemContainer>
   )
