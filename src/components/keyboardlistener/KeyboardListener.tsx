@@ -1,21 +1,26 @@
-import React, {FunctionComponent, useEffect} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 
 
 
 const KeyboardListener: FunctionComponent = (props) => {
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    document.querySelector('body')?.addEventListener('keydown', (e: KeyboardEvent) => {
-      console.log(e.key);
-    })
+    const handler = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'k' && e.metaKey) {
+        setVisible(currentVisible => !currentVisible);
+      }
+    };
+
+    document.querySelector('body')?.addEventListener('keydown', handler);
+
+    return () => {
+      document.querySelector('body')?.removeEventListener('keydown', handler);
+    }
   }, []);
 
 
-  return (
-    <>
-      {props.children}
-    </>
-  )
+  return visible ? (<>{props.children}</>) : null;
 };
 
 
