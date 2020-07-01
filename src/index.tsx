@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 
 const appContainerElement = document.createElement('div');
-appContainerElement.id = '#gcal-command-window';
+appContainerElement.id = 'gcal-command-window';
 document.body.appendChild(appContainerElement);
 
 ReactDOM.render(
@@ -15,8 +15,6 @@ ReactDOM.render(
   </React.StrictMode>,
   appContainerElement
 );
-
-alert('extension injected');
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
