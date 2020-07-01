@@ -33,7 +33,7 @@ const ShortcutKeyContainer = styled.div`
   border-radius: 4px;
 `;
 
-const MenuElement: FunctionComponent<{item: MenuItem, active: boolean, onItemClicked: () => void}> = (props) => {
+const MenuElement: FunctionComponent<{item: MenuItem, active: boolean, searchText: string, onItemClicked: () => void}> = (props) => {
   return (
     <MenuItemContainer className={`${props.active? 'active' : ''}`} onClick={(e) => {
       e.stopPropagation();

@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import Input from '../input/Input';
 import MenuElement, { MenuItem } from './MenuElement';
 import useActions from "../../hooks/useActions";
-// @ts-ignore
-import * as chrono from 'chrono-node';
+import useNLPParser from "../../hooks/useNLPParse";
 
 const MenuContainer = styled.div`
   width: 500px;
@@ -55,6 +54,7 @@ const Menu: FunctionComponent<{
   const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
   const [searchText, setSearchText] = useState<string>('');
   const { performAction } = useActions();
+  const { parseDate } = useNLPParser();
 
   useEffect(() => {
     const searchTerm = searchText.toLowerCase().trim();
@@ -88,15 +88,10 @@ const Menu: FunctionComponent<{
     if (actionToPerform !== 'goto_date') {
       performAction(menuItems[idx].action);
     } else {
-      // ideally this logic should sit elsewhere...
-      const result = chrono.parse(searchText.toLowerCase().replace('go to date', ''));
-      if (result.length > 0) {
-        const values = result[0]?.start?.knownValues;
-        if (values?.day && values?.month) {
-          // could do a spread here but can't be sure if it finds any other values
-          // won't cause any errors in runtime but still nice to construct this manually
-          performAction(menuItems[idx].action,{ day: values.day, month: values.month });
-        }
+      const dateString = searchText.toLowerCase().replace('go to date', '');
+      const parsed = parseDate(dateString);
+      if (parsed) {
+        performAction(menuItems[idx].action, parsed);
       }
     }
     props.onHideMenu();
@@ -121,6 +116,7 @@ const Menu: FunctionComponent<{
         {menuItems.map((item, idx) => (
           <MenuElement item={item}
                        key={item.title}
+                       searchText={searchText}
                        active={idx === activeMenuItem} onItemClicked={() => performActionForElement(idx)}/>
         ))}
       </MenuItemsContainer>
