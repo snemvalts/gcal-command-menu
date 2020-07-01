@@ -1,5 +1,5 @@
 {
-  "name": "My Extension",
+  "name": "Google Calendar Command Menu",
   "version": "1.0",
   "manifest_version": 2,
   "content_scripts" : [
