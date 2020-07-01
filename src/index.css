@@ -1,13 +1,10 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+#gcal-command-window {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10%;
+  /* in gcal there's some box shadow with 505 zindex??*/
+  z-index: 506;
+  font-family: -apple-system, Roboto, sans-serif;
+  font-size: 16px;
 }
