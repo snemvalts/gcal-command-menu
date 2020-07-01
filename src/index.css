@@ -5,4 +5,6 @@
   top: 10%;
   /* in gcal there's some box shadow with 505 zindex??*/
   z-index: 506;
+  font-family: -apple-system, Roboto, sans-serif;
+  font-size: 16px;
 }

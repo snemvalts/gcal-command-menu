@@ -7,13 +7,20 @@ import useActions from "../../hooks/useActions";
 const MenuContainer = styled.div`
   width: 500px;
   border: 1px solid #e3e3e3;
-  background: #efefef;
+  background: linear-gradient(180deg, rgba(250,250,250,1) 0%, rgba(245,245,245,1) 100%);
   border-radius: 5px;
-  padding: 25px;
+  padding: 25px 15px 15px;
+  
+  @media screen and (max-device-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const MenuItemsContainer = styled.div`
   margin-top: 20px;
+  &:empty {
+    margin-top: 10px;
+  }
 `;
 
 
@@ -44,7 +51,7 @@ const Menu: FunctionComponent<{
   const { performAction } = useActions();
 
   useEffect(() => {
-    const searchTerm = searchText.toLowerCase();
+    const searchTerm = searchText.toLowerCase().trim();
     // String.includes is fancy and new, but indexOf is still faster
     setMenuItems(initialMenuItems.filter(
       menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1
@@ -55,8 +62,9 @@ const Menu: FunctionComponent<{
     // we don't want global keyboard shortcuts to trigger when we type T for example
     e.stopPropagation();
     if (e.key === 'Enter') {
-      // if enter is pressed and only one menuitem is available, trigger that action
-      performActionForElement(activeMenuItem);
+      if (menuItems.length > 0){
+        performActionForElement(activeMenuItem);
+      }
     } else if (e.key === 'ArrowDown') {
       // math.min so the index stops moving at the end
       setActiveMenuItem(activeMenuItem => Math.min(activeMenuItem + 1, menuItems.length - 1));
@@ -85,7 +93,9 @@ const Menu: FunctionComponent<{
              onChange={(e) => searchOnChangeHandler(e)}
              onKeyDown={(e) => searchKeyDownHandler(e)}
              onBlur={() => props.onHideMenu()}
-             />
+             spellCheck={'false'}
+             autoComplete={'false'}
+      />
       <MenuItemsContainer>
         {menuItems.map((item, idx) => (
           <MenuElement item={item}
