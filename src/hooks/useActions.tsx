@@ -20,19 +20,28 @@ const useActions = () => {
     (document.querySelector('div[jsname="P6mm8"]') as HTMLElement | null)?.click();
   }
 
-  const goToDate = (date: {day: number, month: number}) => {
-    const splitURL = window.location.href.split('/');
-    // this detection isn't that good... checks if last two elements of / separated url are numeric...
-    if (!isNaN(parseInt(splitURL[splitURL.length - 1])) && !isNaN(parseInt(splitURL[splitURL.length - 2]))) {
-      window.location.href = [...splitURL.slice(0, -2), date.month.toString(), date.day.toString()].join('/');
+  const goToDate = (date: {day?: number, month?: number}) => {
+    // if only chrono had typescript defs, this would be better
+    if (date.day && date.month) {
+      const splitURL = window.location.href.split('/');
+      // this detection isn't that good... checks if last two elements of / separated url are numeric...
+      if (!isNaN(parseInt(splitURL[splitURL.length - 1])) && !isNaN(parseInt(splitURL[splitURL.length - 2]))) {
+        // removes last 2 elements from end of array, adds month and day
+        // and joins them back to an URL
+        window.location.href = [...splitURL.slice(0, -2), date.month.toString(), date.day.toString()].join('/');
+      } else {
+        // not using the implied year here from chrono...
+        // also using the normal date object... would use moment() for reliability
+        // even though i suppose it's consistent across chrome 🤔
+        window.location.href = [...splitURL, 'month', new Date().getFullYear(), date.month.toString(), date.day.toString()].join('/');
+      }
     }
   }
 
 
   // i could just return the function itself, but i want it to have a specific name
   return {
-    performAction: (action: Action, date?: {day: number, month: number}) => {
-      console.log(action, date);
+    performAction: (action: Action, date?: {day?: number, month?: number}) => {
       if (action === 'previous_period') {
         goToPreviousPeriod();
       } else if (action === 'next_period') {

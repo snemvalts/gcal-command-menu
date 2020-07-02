@@ -42,7 +42,8 @@ const initialMenuItems: MenuItem[] = [
     action: 'next_period',
   },
   {
-    title: 'Go to date',
+    title: 'Go to',
+    commandTitleEmphasis: '[date]',
     action: 'goto_date',
   },
 ];
@@ -60,7 +61,7 @@ const Menu: FunctionComponent<{
     const searchTerm = searchText.toLowerCase().trim();
     // String.includes is fancy and new, but indexOf is still faster
     setMenuItems(initialMenuItems.filter(
-      menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1 || (menuItem.action === 'goto_date' && searchTerm.indexOf('go to date') === 0)
+      menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1 || (menuItem.action === 'goto_date' && searchTerm.indexOf('go to ') === 0)
     ));
   }, [searchText]);
 
@@ -72,10 +73,10 @@ const Menu: FunctionComponent<{
         performActionForElement(activeMenuItem);
       }
     } else if (e.key === 'ArrowDown') {
-      // math.min so the index stops moving at the end
+      // math.min with index of last element so the index stops moving at the end
       setActiveMenuItem(activeMenuItem => Math.min(activeMenuItem + 1, menuItems.length - 1));
     } else if (e.key === 'ArrowUp') {
-      // math.min so the index stops moving at the beginning
+      // math.max with 0 so the index stops moving at the beginning
       setActiveMenuItem(activeMenuItem => Math.max(activeMenuItem - 1, 0));
     } else if (e.key === 'Escape') {
       props.onHideMenu();
@@ -88,7 +89,7 @@ const Menu: FunctionComponent<{
     if (actionToPerform !== 'goto_date') {
       performAction(menuItems[idx].action);
     } else {
-      const dateString = searchText.toLowerCase().replace('go to date', '');
+      const dateString = searchText.toLowerCase().replace('go to', '');
       const parsed = parseDate(dateString);
       if (parsed) {
         performAction(menuItems[idx].action, parsed);
@@ -115,8 +116,8 @@ const Menu: FunctionComponent<{
       <MenuItemsContainer>
         {menuItems.map((item, idx) => (
           <MenuElement item={item}
-                       key={item.title}
-                       searchText={searchText}
+                       key={item.action}
+                       titleEmphasis={item.commandTitleEmphasis}
                        active={idx === activeMenuItem} onItemClicked={() => performActionForElement(idx)}/>
         ))}
       </MenuItemsContainer>

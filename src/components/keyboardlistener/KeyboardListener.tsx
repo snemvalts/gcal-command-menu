@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useEffect} from 'react';
 import useActions from '../../hooks/useActions';
 
 
@@ -28,7 +28,7 @@ const KeyboardListener: FunctionComponent<{
     return () => {
       document.querySelector('body')?.removeEventListener('keydown', handler);
     }
-  }, [performAction]);
+  }, [performAction, props]);
 
 
   if (props.visible) {
