@@ -42,7 +42,6 @@ const useActions = () => {
   // i could just return the function itself, but i want it to have a specific name
   return {
     performAction: (action: Action, date?: {day?: number, month?: number}) => {
-      console.log(action, date);
       if (action === 'previous_period') {
         goToPreviousPeriod();
       } else if (action === 'next_period') {

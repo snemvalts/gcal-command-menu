@@ -18,6 +18,11 @@ const MenuItemContainer = styled.div`
     border: 1px solid #f3f3f3;
     background: white;
   }
+
+  &.not-clickable {
+    /* this cursor is pretty ugly...*/
+    cursor: not-allowed;
+  }
 `;
 
 const ShortcutKeyContainer = styled.div`
@@ -35,9 +40,11 @@ const ShortcutKeyContainer = styled.div`
 
 const MenuElement: FunctionComponent<{item: MenuItem, active: boolean, onItemClicked: () => void, titleEmphasis?: string}> = (props) => {
   return (
-    <MenuItemContainer className={`${props.active? 'active' : ''}`} onClick={(e) => {
+    <MenuItemContainer className={`${props.active? 'active' : ''} ${props.item.action === 'goto_date' ? 'not-clickable' : ''}`} onClick={(e) => {
       e.stopPropagation();
-      props.onItemClicked();
+      if (props.item.action !== 'goto_date') {
+        props.onItemClicked();
+      }
     }}>
       <span>{props.item.title} {props.titleEmphasis ? (<b>{props.titleEmphasis}</b>) : null}</span>
       {props.item.keyShortcut ? (<ShortcutKeyContainer>{props.item.keyShortcut}</ShortcutKeyContainer>) : null}

@@ -73,10 +73,10 @@ const Menu: FunctionComponent<{
         performActionForElement(activeMenuItem);
       }
     } else if (e.key === 'ArrowDown') {
-      // math.min so the index stops moving at the end
+      // math.min with index of last element so the index stops moving at the end
       setActiveMenuItem(activeMenuItem => Math.min(activeMenuItem + 1, menuItems.length - 1));
     } else if (e.key === 'ArrowUp') {
-      // math.min so the index stops moving at the beginning
+      // math.max with 0 so the index stops moving at the beginning
       setActiveMenuItem(activeMenuItem => Math.max(activeMenuItem - 1, 0));
     } else if (e.key === 'Escape') {
       props.onHideMenu();
@@ -116,7 +116,7 @@ const Menu: FunctionComponent<{
       <MenuItemsContainer>
         {menuItems.map((item, idx) => (
           <MenuElement item={item}
-                       key={item.title}
+                       key={item.action}
                        titleEmphasis={item.commandTitleEmphasis}
                        active={idx === activeMenuItem} onItemClicked={() => performActionForElement(idx)}/>
         ))}
