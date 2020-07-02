@@ -42,7 +42,8 @@ const initialMenuItems: MenuItem[] = [
     action: 'next_period',
   },
   {
-    title: 'Go to date',
+    title: 'Go to',
+    commandTitleEmphasis: '[date]',
     action: 'goto_date',
   },
 ];
@@ -60,7 +61,7 @@ const Menu: FunctionComponent<{
     const searchTerm = searchText.toLowerCase().trim();
     // String.includes is fancy and new, but indexOf is still faster
     setMenuItems(initialMenuItems.filter(
-      menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1 || (menuItem.action === 'goto_date' && searchTerm.indexOf('go to date') === 0)
+      menuItem => menuItem.title.toLowerCase().indexOf(searchTerm) > -1 || (menuItem.action === 'goto_date' && searchTerm.indexOf('go to ') === 0)
     ));
   }, [searchText]);
 
@@ -88,7 +89,7 @@ const Menu: FunctionComponent<{
     if (actionToPerform !== 'goto_date') {
       performAction(menuItems[idx].action);
     } else {
-      const dateString = searchText.toLowerCase().replace('go to date', '');
+      const dateString = searchText.toLowerCase().replace('go to', '');
       const parsed = parseDate(dateString);
       if (parsed) {
         performAction(menuItems[idx].action, parsed);
@@ -116,7 +117,7 @@ const Menu: FunctionComponent<{
         {menuItems.map((item, idx) => (
           <MenuElement item={item}
                        key={item.title}
-                       searchText={searchText}
+                       titleEmphasis={item.commandTitleEmphasis}
                        active={idx === activeMenuItem} onItemClicked={() => performActionForElement(idx)}/>
         ))}
       </MenuItemsContainer>

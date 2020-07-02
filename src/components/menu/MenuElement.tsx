@@ -33,13 +33,13 @@ const ShortcutKeyContainer = styled.div`
   border-radius: 4px;
 `;
 
-const MenuElement: FunctionComponent<{item: MenuItem, active: boolean, searchText: string, onItemClicked: () => void}> = (props) => {
+const MenuElement: FunctionComponent<{item: MenuItem, active: boolean, onItemClicked: () => void, titleEmphasis?: string}> = (props) => {
   return (
     <MenuItemContainer className={`${props.active? 'active' : ''}`} onClick={(e) => {
       e.stopPropagation();
       props.onItemClicked();
     }}>
-      <span>{props.item.title}</span>
+      <span>{props.item.title} {props.titleEmphasis ? (<b>{props.titleEmphasis}</b>) : null}</span>
       {props.item.keyShortcut ? (<ShortcutKeyContainer>{props.item.keyShortcut}</ShortcutKeyContainer>) : null}
     </MenuItemContainer>
   )
@@ -49,9 +49,8 @@ const MenuElement: FunctionComponent<{item: MenuItem, active: boolean, searchTex
 export interface MenuItem {
   title: string;
   action: Action;
-  // technically it's required in current scope (all bottom 3 elements have a key)
-  // but makes sense to have without cause it's not strictly needed
   keyShortcut?: string;
+  commandTitleEmphasis?: string;
 }
 
 export default MenuElement;
